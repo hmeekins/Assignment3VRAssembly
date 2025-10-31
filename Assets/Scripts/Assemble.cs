@@ -51,6 +51,7 @@ public class Assemble : MonoBehaviour
         if (StepTracker.step == 7)
         {
             win.Play();
+            StepTracker.step += 1;
         }
     }
 }
