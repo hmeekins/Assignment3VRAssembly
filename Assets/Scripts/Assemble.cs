@@ -5,17 +5,22 @@ using UnityEngine;
 
 public class Assemble : MonoBehaviour
 {
+
     public Transform target;
 
     public bool isSolved;
 
+    public int currentStep;
     private AudioSource audioSource;
+    private AudioSource win;
     private Rigidbody rigidbody;
     private MeshCollider meshCollider;
     // Start is called before the first frame update
     void Start()
     {
-        audioSource = GetComponent<AudioSource>();
+        var audioSources = GetComponentsInParent<AudioSource>();
+        audioSource = audioSources[0];
+        win = audioSources[1];
         rigidbody = GetComponent<Rigidbody>();
         meshCollider = GetComponent<MeshCollider>();
     }
@@ -25,7 +30,7 @@ public class Assemble : MonoBehaviour
     {
         float distance = Vector3.Distance(transform.position, target.position);
 
-        if (distance < .05f && !isSolved)
+        if (distance < .2f && !isSolved && StepTracker.step == currentStep)
         {
             IEnumerable<GrabInteractor> setInteractors = transform.GetChild(0).GetComponent<GrabInteractable>().Interactors;
             foreach (GrabInteractor interactor in setInteractors) { interactor.Unselect(); }
@@ -40,6 +45,12 @@ public class Assemble : MonoBehaviour
             audioSource.Play();
 
             isSolved = true;
+            StepTracker.step += 1;
+
+        }
+        if (StepTracker.step == 7)
+        {
+            win.Play();
         }
     }
 }
